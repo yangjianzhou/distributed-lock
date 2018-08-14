@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <context id="MBG" targetRuntime="MyBatis3" defaultModelType="conditional">
+
+        <commentGenerator>
+            <property name="suppressAllComments" value="true" />
+        </commentGenerator>
+
+        <!-- 配置插件 -->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver" connectionURL="jdbc:mysql://localhost:3306/test" userId="root" password="12345678" />
+
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false" />
+            <!-- 类型解析器 -->
+        </javaTypeResolver>
+
+        <javaModelGenerator targetPackage="com.iwill.db.model" targetProject="src/main/java">
+            <!-- 实体类 -->
+            <property name="enableSubPackages" value="true" />
+           <property name="exampleTargetPackage" value="com.iwill.example"/>
+           <property name="exampleTargetProject" value="src/main/java"/>
+        </javaModelGenerator>
+
+        <sqlMapGenerator targetPackage="com.iwill.db.mapper" targetProject="src/main/resources" >
+            <!-- 实体类SQL映射文件 -->
+            <property name="enableSubPackages" value="true" />
+        </sqlMapGenerator>
+
+        <!-- Mapper接口 -->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.iwill.db.mapper" targetProject="src/main/java">
+            <property name="enableSubPackages" value="true" />
+        </javaClientGenerator>
+
+        <!-- 基础表 -->
+        <table tableName="lock_record" domainObjectName="LockRecordDTO" mapperName="LockRecordMapper" />
+    </context>
+</generatorConfiguration>

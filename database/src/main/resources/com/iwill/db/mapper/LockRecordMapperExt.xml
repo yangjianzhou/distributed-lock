@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iwill.db.mapper.LockRecordMapperExt">
+  <resultMap id="BaseResultMap" type="com.iwill.db.model.LockRecordDTO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="lock_name" jdbcType="VARCHAR" property="lockName" />
+    <result column="version" jdbcType="INTEGER" property="version" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.iwill.db.model.LockRecordDTO">
+    <result column="expire_time" jdbcType="LONGVARCHAR" property="expireTime" />
+  </resultMap>
+
+  <select id="selectByLockName" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String">
+    select *  from lock_record where lock_name = #{lockName}
+  </select>
+  <update id="updateExpireTime" parameterType="com.iwill.db.model.LockRecordDTO">
+    update lock_record
+    set expire_time = #{expireTime},
+     version = version + 1
+    where lock_name = #{lockName} and version = #{version} and expire_time = #{expireTime}
+
+  </update>
+</mapper>
