@@ -28,7 +28,7 @@ public class CuratorClient implements InitializingBean, DisposableBean {
                 logger.warn("acquire lock fail , thread id : " + Thread.currentThread().getId());
                 return;
             }
-            logger.info("acquire lock success ");
+            logger.info("acquire lock success ,thread id : " + Thread.currentThread().getId());
             businessService.handle();
         } catch (Exception exp) {
             logger.error("execute throw exp", exp);

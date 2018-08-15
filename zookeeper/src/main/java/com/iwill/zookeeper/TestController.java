@@ -18,8 +18,8 @@ public class TestController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @RequestMapping(value = "/get-lock" ,method = RequestMethod.GET)
-    public String getLock() {
+    @RequestMapping(value = "/acquire-lock" ,method = RequestMethod.GET)
+    public String acquireLock() {
         try {
             curatorClient.execute("/lock-path", new BusinessService() {
                 @Override
@@ -33,8 +33,8 @@ public class TestController {
         return "success" ;
     }
 
-    @RequestMapping(value = "/batch-get-lock" ,method = RequestMethod.GET)
-    public String batchGetLock() {
+    @RequestMapping(value = "/batch-acquire-lock" ,method = RequestMethod.GET)
+    public String batchAcquireLock() {
         ExecutorService executorService = Executors.newFixedThreadPool(20);
         for (int index = 0; index < 20; index++) {
             executorService.submit(() -> {
@@ -53,4 +53,5 @@ public class TestController {
         }
         return "success";
     }
+
 }

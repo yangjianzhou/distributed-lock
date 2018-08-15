@@ -11,5 +11,6 @@ public class JedisLock {
         String script = "return redis.pcall('setnx',KEYS[1],'bar')";
         Object object = jedis.eval(script , 1 ,"bar");
         System.out.println(object);
+        jedis.time();
     }
 }
