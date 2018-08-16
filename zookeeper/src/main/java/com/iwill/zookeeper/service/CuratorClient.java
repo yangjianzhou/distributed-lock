@@ -1,4 +1,4 @@
-package com.iwill.zookeeper;
+package com.iwill.zookeeper.service;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;

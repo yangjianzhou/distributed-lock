@@ -1,4 +1,4 @@
-package com.iwill.zookeeper;
+package com.iwill.zookeeper.service;
 
 public abstract class BusinessService {
 
