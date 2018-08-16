@@ -353,6 +353,76 @@ public class LockRecordDTOExample {
             addCriterion("version not between", value1, value2, "version");
             return (Criteria) this;
         }
+
+        public Criteria andLockOwnerIsNull() {
+            addCriterion("lock_owner is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLockOwnerIsNotNull() {
+            addCriterion("lock_owner is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLockOwnerEqualTo(String value) {
+            addCriterion("lock_owner =", value, "lockOwner");
+            return (Criteria) this;
+        }
+
+        public Criteria andLockOwnerNotEqualTo(String value) {
+            addCriterion("lock_owner <>", value, "lockOwner");
+            return (Criteria) this;
+        }
+
+        public Criteria andLockOwnerGreaterThan(String value) {
+            addCriterion("lock_owner >", value, "lockOwner");
+            return (Criteria) this;
+        }
+
+        public Criteria andLockOwnerGreaterThanOrEqualTo(String value) {
+            addCriterion("lock_owner >=", value, "lockOwner");
+            return (Criteria) this;
+        }
+
+        public Criteria andLockOwnerLessThan(String value) {
+            addCriterion("lock_owner <", value, "lockOwner");
+            return (Criteria) this;
+        }
+
+        public Criteria andLockOwnerLessThanOrEqualTo(String value) {
+            addCriterion("lock_owner <=", value, "lockOwner");
+            return (Criteria) this;
+        }
+
+        public Criteria andLockOwnerLike(String value) {
+            addCriterion("lock_owner like", value, "lockOwner");
+            return (Criteria) this;
+        }
+
+        public Criteria andLockOwnerNotLike(String value) {
+            addCriterion("lock_owner not like", value, "lockOwner");
+            return (Criteria) this;
+        }
+
+        public Criteria andLockOwnerIn(List<String> values) {
+            addCriterion("lock_owner in", values, "lockOwner");
+            return (Criteria) this;
+        }
+
+        public Criteria andLockOwnerNotIn(List<String> values) {
+            addCriterion("lock_owner not in", values, "lockOwner");
+            return (Criteria) this;
+        }
+
+        public Criteria andLockOwnerBetween(String value1, String value2) {
+            addCriterion("lock_owner between", value1, value2, "lockOwner");
+            return (Criteria) this;
+        }
+
+        public Criteria andLockOwnerNotBetween(String value1, String value2) {
+            addCriterion("lock_owner not between", value1, value2, "lockOwner");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

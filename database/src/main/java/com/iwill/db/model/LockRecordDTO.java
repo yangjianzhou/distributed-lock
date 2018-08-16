@@ -9,6 +9,8 @@ public class LockRecordDTO {
 
     private Integer version;
 
+    private String lockOwner;
+
     public Long getId() {
         return id;
     }
@@ -39,5 +41,13 @@ public class LockRecordDTO {
 
     public void setVersion(Integer version) {
         this.version = version;
+    }
+
+    public String getLockOwner() {
+        return lockOwner;
+    }
+
+    public void setLockOwner(String lockOwner) {
+        this.lockOwner = lockOwner;
     }
 }

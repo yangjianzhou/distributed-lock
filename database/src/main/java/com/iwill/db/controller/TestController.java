@@ -16,8 +16,13 @@ public class TestController {
     private LockService lockService;
 
     @RequestMapping("acquire-lock")
-    public String acquireLock() {
-        boolean locked = lockService.acquireLock("test", 10000000L);
+    public String acquireLock() throws Exception{
+        boolean locked = lockService.acquire("test", 100000L);
+        if (!locked){
+            return String.valueOf(locked);
+        }
+        Thread.sleep(10000);
+        lockService.release();
         return String.valueOf(locked);
     }
 
@@ -28,7 +33,7 @@ public class TestController {
             final int index = i;
             for (int j = 0; j < 20; j++) {
                 executor.submit(() -> {
-                    boolean locked = lockService.acquireLock("test_" + index, 10000000L);
+                    boolean locked = lockService.acquire("test_" + index, 10000000L);
                     if (locked) {
                         System.out.println("index: " + index + " ,threadId : " + Thread.currentThread().getId() + " ,locked : " + locked);
                     }

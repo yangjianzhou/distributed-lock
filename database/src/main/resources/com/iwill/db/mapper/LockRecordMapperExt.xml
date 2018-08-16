@@ -5,6 +5,7 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="lock_name" jdbcType="VARCHAR" property="lockName" />
     <result column="version" jdbcType="INTEGER" property="version" />
+    <result column="lock_owner" jdbcType="VARCHAR" property="lockOwner" />
   </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.iwill.db.model.LockRecordDTO">
     <result column="expire_time" jdbcType="LONGVARCHAR" property="expireTime" />
@@ -20,4 +21,16 @@
     where lock_name = #{lockName} and version = #{version} and expire_time = #{expireTime}
 
   </update>
+
+  <update id="updateExpireTimeByOwner" parameterType="com.iwill.db.model.LockRecordDTO">
+    update lock_record
+    set expire_time = #{expireTime},
+     lock_owner = #{lockOwner},
+     version = version + 1
+    where lock_name = #{lockName} and version = #{version} and lock_owner = #{lockOwner}
+  </update>
+
+  <delete id="deleteByOwner" parameterType="java.util.Map">
+    delete from lock_record where lock_name = #{lockName} and lock_owner = #{lockOwner}
+  </delete>
 </mapper>

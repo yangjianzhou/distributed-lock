@@ -3,6 +3,7 @@ CREATE TABLE `lock_record` (
   `lock_name` varchar(50) DEFAULT NULL COMMENT '锁名称',
   `expire_time` bigint(20) DEFAULT NULL COMMENT '过期时间',
   `version` int(11) DEFAULT NULL COMMENT '版本号',
+  `lock_owner` varchar(100) DEFAULT NULL COMMENT '锁拥有者',
   PRIMARY KEY (`id`),
   UNIQUE KEY `lock_name` (`lock_name`)
 )
