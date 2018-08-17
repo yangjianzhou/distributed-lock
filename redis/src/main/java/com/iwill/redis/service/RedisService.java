@@ -27,37 +27,37 @@ public class RedisService {
 
     private static String extendExpireTimeScriptSHA;
 
-    private static String lockScript = "local key = KEYS[1]                            \n"
-            + "local value = ARGV[1]                          \n"
-            + "local expireTime = ARGV[2]                     \n"
-            + "                                               \n"
-            + "if (redis.call('setnx',key,value) == 1) then   \n"
-            + "   redis.call('pexpire' , key , expireTime)    \n"
-            + "   return 'true'                               \n"
-            + "else                                           \n"
-            + "   return 'false'                              \n"
-            + "end                                            \n";
+    private static String lockScript                = "local key = KEYS[1]                            \n"
+                                                    + "local value = ARGV[1]                          \n"
+                                                    + "local expireTime = ARGV[2]                     \n"
+                                                    + "                                               \n"
+                                                    + "if (redis.call('setnx',key,value) == 1) then   \n"
+                                                    + "   redis.call('pexpire' , key , expireTime)    \n"
+                                                    + "   return 'true'                               \n"
+                                                    + "else                                           \n"
+                                                    + "   return 'false'                              \n"
+                                                    + "end                                            \n";
 
-    private static String unlockScript = "local key = KEYS[1]                            \n"
-            + "local value = ARGV[1]                          \n"
-            + "                                               \n"
-            + "if (redis.call('get',key) == value)  then      \n"
-            + "   redis.call('del' , key )                    \n"
-            + "   return 'true'                               \n"
-            + "else                                           \n"
-            + "   return 'false'                              \n"
-            + "end                                            \n";
+    private static String unlockScript              = "local key = KEYS[1]                            \n"
+                                                    + "local value = ARGV[1]                          \n"
+                                                    + "                                               \n"
+                                                    + "if (redis.call('get',key) == value)  then      \n"
+                                                    + "   redis.call('del' , key )                    \n"
+                                                    + "   return 'true'                               \n"
+                                                    + "else                                           \n"
+                                                    + "   return 'false'                              \n"
+                                                    + "end                                            \n";
 
-    private static String extendExpireTimeScript = "local key = KEYS[1]                            \n"
-            + "local value = ARGV[1]                          \n"
-            + "local newExpireTime = ARGV[2]                  \n"
-            + "                                               \n"
-            + "if (redis.call('get',key) == value)  then      \n"
-            + "   redis.call('pexpire' , key ,newExpireTime)  \n"
-            + "   return 'true'                               \n"
-            + "else                                           \n"
-            + "   return 'false'                              \n"
-            + "end                                            \n";
+    private static String extendExpireTimeScript    = "local key = KEYS[1]                            \n"
+                                                    + "local value = ARGV[1]                          \n"
+                                                    + "local newExpireTime = ARGV[2]                  \n"
+                                                    + "                                               \n"
+                                                    + "if (redis.call('get',key) == value)  then      \n"
+                                                    + "   redis.call('pexpire' , key ,newExpireTime)  \n"
+                                                    + "   return 'true'                               \n"
+                                                    + "else                                           \n"
+                                                    + "   return 'false'                              \n"
+                                                    + "end                                            \n";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static class LockData {
