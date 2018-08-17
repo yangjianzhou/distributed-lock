@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -23,10 +25,39 @@ public class RedisService {
 
     private static String unlockScriptSHA;
 
-    private static String lockScript = "";
+    private static String extendExpireTimeScriptSHA;
 
-    private static String unlockScript = "";
+    private static String lockScript = "local key = KEYS[1]                            \n"
+            + "local value = ARGV[1]                          \n"
+            + "local expireTime = ARGV[2]                     \n"
+            + "                                               \n"
+            + "if (redis.call('setnx',key,value) == 1) then   \n"
+            + "   redis.call('pexpire' , key , expireTime)    \n"
+            + "   return 'true'                               \n"
+            + "else                                           \n"
+            + "   return 'false'                              \n"
+            + "end                                            \n";
 
+    private static String unlockScript = "local key = KEYS[1]                            \n"
+            + "local value = ARGV[1]                          \n"
+            + "                                               \n"
+            + "if (redis.call('get',key) == value)  then      \n"
+            + "   redis.call('del' , key )                    \n"
+            + "   return 'true'                               \n"
+            + "else                                           \n"
+            + "   return 'false'                              \n"
+            + "end                                            \n";
+
+    private static String extendExpireTimeScript = "local key = KEYS[1]                            \n"
+            + "local value = ARGV[1]                          \n"
+            + "local newExpireTime = ARGV[2]                  \n"
+            + "                                               \n"
+            + "if (redis.call('get',key) == value)  then      \n"
+            + "   redis.call('pexpire' , key ,newExpireTime)  \n"
+            + "   return 'true'                               \n"
+            + "else                                           \n"
+            + "   return 'false'                              \n"
+            + "end                                            \n";
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static class LockData {
@@ -73,17 +104,40 @@ public class RedisService {
         String owner = generatorOwner();
         boolean acquired = false;
         try {
-            acquired = (Boolean) client.evalsha(lockScriptSHA, 1, key, owner, String.valueOf(expireTime));
+            Object result = client.evalsha(lockScriptSHA, 1, key, owner, String.valueOf(expireTime));
+            acquired = Boolean.valueOf((String) result);
         } catch (Exception exp) {
             logger.error("execute eval sha throw exp", exp);
         }
         if (acquired) {
+            startExtendExpireTimeTask(key, owner, expireTime);
             lockData = new LockData(currentThread, key, owner);
             threadData.put(currentThread, lockData);
             return true;
         }
 
         return false;
+    }
+
+    private void startExtendExpireTimeTask(String key, String owner, long expireTime) {
+        if (extendExpireTimeScriptSHA == null) {
+            extendExpireTimeScriptSHA = client.scriptLoad(extendExpireTimeScript);
+        }
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    Object result = client.evalsha(extendExpireTimeScriptSHA, 1, key, owner, String.valueOf(expireTime));
+                    boolean extendSuccess = Boolean.valueOf((String) result);
+                    if (!extendSuccess) {
+                        timer.cancel();
+                    }
+                } catch (Exception exp) {
+                    timer.cancel();
+                }
+            }
+        }, 0, expireTime * 3 / 4);
     }
 
     public boolean release() {
@@ -103,7 +157,11 @@ public class RedisService {
             unlockScriptSHA = client.scriptLoad(unlockScript);
         }
         try {
-            client.evalsha(unlockScriptSHA, 1, lockData.key, lockData.owner);
+            Object result = client.evalsha(unlockScriptSHA, 1, lockData.key, lockData.owner);
+            boolean unlocked = Boolean.valueOf((String) result);
+            if (!unlocked) {
+                logger.error(String.format("unlock fail ,key = %s", lockData.key));
+            }
         } finally {
             threadData.remove(currentThread);
         }

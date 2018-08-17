@@ -18,7 +18,7 @@
     update lock_record
     set expire_time = #{expireTime},
      version = version + 1
-    where lock_name = #{lockName} and version = #{version} and expire_time = #{expireTime}
+    where lock_name = #{lockName} and version = #{version}
 
   </update>
 
