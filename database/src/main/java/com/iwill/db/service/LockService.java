@@ -89,7 +89,8 @@ public class LockService {
 
     /**
      * 尝试获得锁，数据库表有设置唯一键约束，只有插入成功的线程才可以获取锁
-     * @param lockName 锁名称
+     *
+     * @param lockName  锁名称
      * @param lockTime  锁的过期时间
      * @param lockOwner 锁的拥有者
      * @return
@@ -110,11 +111,12 @@ public class LockService {
     }
 
     /**
-     *  本方法用来延长过期时间，作用就是保持锁不过期，类似与zookeeper分布式锁的会话保持
-     *  如果会话一直存在，且锁没有被释放，则锁一直不过期
-     * @param lockName 锁名称
+     * 本方法用来延长过期时间，作用就是保持锁不过期，类似与zookeeper分布式锁的会话保持
+     * 如果会话一直存在，且锁没有被释放，则锁一直不过期
+     *
+     * @param lockName  锁名称
      * @param lockOwner 锁的拥有者
-     * @param lockTime 锁的过期时间
+     * @param lockTime  锁的过期时间
      */
     private void startExtendExpireTimeTask(String lockName, String lockOwner, long lockTime) {
         Timer timer = new Timer();
@@ -134,10 +136,11 @@ public class LockService {
     }
 
     /**
-     *  当上一次获取锁的线程没有正确释放锁时，下一次其他线程获取锁时会调用本方法
-     *  当多个线程竞争获取锁时，有乐观锁控制，只有更新成功的线程才会获的锁
+     * 当上一次获取锁的线程没有正确释放锁时，下一次其他线程获取锁时会调用本方法
+     * 当多个线程竞争获取锁时，有乐观锁控制，只有更新成功的线程才会获的锁
+     *
      * @param lockRecord 锁记录，里面保存了上一次获取锁的拥有者信息
-     * @param lockTime 锁过期时间
+     * @param lockTime   锁过期时间
      * @param lockOwner  锁的拥有者
      * @return
      */

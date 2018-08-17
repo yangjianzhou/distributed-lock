@@ -89,6 +89,15 @@ public class RedisService {
         }
     }
 
+    /**
+     * 可重入的获取锁
+     * 使用lua脚本来保证setnx和pexpire是一个原子操作
+     * 获取锁成功后，里面启动过期续约任务
+     *
+     * @param key
+     * @param expireTime
+     * @return
+     */
     public boolean acquire(String key, long expireTime) {
 
         Thread currentThread = Thread.currentThread();
@@ -119,6 +128,13 @@ public class RedisService {
         return false;
     }
 
+    /**
+     * 租期续约任务，在当前线程还运行的情况下，延长过期时间
+     *
+     * @param key
+     * @param owner
+     * @param expireTime
+     */
     private void startExtendExpireTimeTask(String key, String owner, long expireTime) {
         if (extendExpireTimeScriptSHA == null) {
             extendExpireTimeScriptSHA = client.scriptLoad(extendExpireTimeScript);
@@ -140,6 +156,11 @@ public class RedisService {
         }, 0, expireTime * 3 / 4);
     }
 
+    /**
+     * 释放锁，获取多少次锁，就释放多少次锁
+     *
+     * @return
+     */
     public boolean release() {
         Thread currentThread = Thread.currentThread();
         LockData lockData = threadData.get(currentThread);
