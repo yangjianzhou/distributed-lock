@@ -23,7 +23,7 @@ public class CuratorClient implements InitializingBean, DisposableBean {
     public void execute(String lockPath, BusinessService businessService) throws Exception {
         InterProcessMutex lock = new InterProcessMutex(client, lockPath);
         try {
-            boolean acquireLockSuccess = lock.acquire(200, TimeUnit.MILLISECONDS);
+            boolean acquireLockSuccess = lock.acquire(20000, TimeUnit.MILLISECONDS);
             if (!acquireLockSuccess) {
                 logger.warn("acquire lock fail , thread id : " + Thread.currentThread().getId());
                 return;
@@ -34,7 +34,7 @@ public class CuratorClient implements InitializingBean, DisposableBean {
             logger.error("execute throw exp", exp);
         } finally {
             if (lock.isOwnedByCurrentThread()) {
-                lock.release();
+                //lock.release();
             }
         }
     }

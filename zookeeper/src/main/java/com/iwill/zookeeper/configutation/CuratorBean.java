@@ -11,9 +11,9 @@ import org.springframework.context.annotation.Configuration;
 public class CuratorBean {
 
     @Bean
-    public CuratorFramework curatorFramework(){
-        RetryPolicy retryPolicy =  new RetryNTimes(3,1000);
-        CuratorFramework client = CuratorFrameworkFactory.newClient("localhost:2181",retryPolicy );
-        return client ;
+    public CuratorFramework curatorFramework() {
+        RetryPolicy retryPolicy = new RetryNTimes(3, 1000);
+        CuratorFramework client = CuratorFrameworkFactory.newClient("localhost:2181", retryPolicy);
+        return client;
     }
 }
